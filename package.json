@@ -1,0 +1,21 @@
+{
+  "name": "game_dev_active",
+  "version": "1.0.0",
+  "description": "",
+  "main": "app.js",
+  "dependencies": {
+    "express": "^4.17.1",
+    "mongojs": "^3.1.0",
+    "nodemon": "^1.19.4",
+    "socket.io": "^2.3.0"
+  },
+"engines": { "node":"10.16.3"
+
+} ,
+  "devDependencies": {},
+  "scripts": {
+    "start": "node app.js"
+  },
+  "author": "",
+  "license": "ISC"
+}

@@ -1,0 +1,10 @@
+body{
+    background-image: url(./giphy.gif);
+    background-size: contain;
+}
+
+h1{
+    text-align: center;
+    color: antiquewhite;
+    font-size: 40px;
+}

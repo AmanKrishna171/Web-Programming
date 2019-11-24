@@ -1,0 +1,32 @@
+body{
+    background-image: url(./giphy.gif);
+    background-repeat: repeat;
+    font-size: 47px;
+    background-size: contain;
+}
+
+h1{
+    color: rgba(211, 8, 41, 0.849);
+}
+
+button{
+    border: none;
+    background-color: rgba(231, 34, 73, 0.801);
+    color: blanchedalmond;
+    border-radius: 11px;
+    align-content: center;
+    text-align: center;
+    padding: 15px 45px;
+    font-size: 40px;
+}
+
+button:hover{
+    border: 2px rgb(228, 68, 100);
+    background-color: rgba(233, 65, 98, 0.904);
+    color: blanchedalmond;
+    text-decoration: underline;
+    border-radius: 11px;
+    align-content: center;
+    text-align: center;
+    padding: 15px 45px;
+}

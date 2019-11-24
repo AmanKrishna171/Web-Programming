@@ -1,0 +1,107 @@
+
+body {
+  font-family: arial, sans-serif;
+  font-size: 16px;
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  user-select: none;
+  cursor: default;
+}
+
+h1 {
+
+  color: red;
+
+}
+#ctx {
+  border: 1px solid black;
+  display: inline-block;
+  background-image: url('level.png');
+}
+
+ul {
+  list-style: none;
+  padding: 0;
+  margin: 0
+}
+li {
+  padding: 19px 0;
+}
+
+a {
+  text-decoration: none;
+  color: inherit;
+  text-shadow: -1px -1px 0 #000, 1px -1px 0 #000, -1px 1px 0 #000, 1px 1px 0 #000;
+}
+
+
+#menu {
+  position: absolute;
+  width: 700px;
+  height: 500px;
+  border: 1px solid black;
+  z-index: 2;
+  text-align: center;
+  background-image: url('/client/img/blood.png');
+}
+
+.button {
+  display: block;
+  width: 150px;
+  margin: 0 auto;
+  height: 30px;
+  line-height: 30px;
+  border: 1px solid #AA2666;
+  color: white;
+  font-weight: bold;
+  text-shadow: -1px -1px 0 #000, 1px -1px 0 #000, -1px 1px 0 #000, 1px 1px 0 #000;
+  background-color: #FB1886;
+  background-image: -webkit-linear-gradient(bottom, #FB1886 0%, #B30D5D 100%);
+  background-image:         linear-gradient(to bottom, #FB1886 0%, #B30D5D 100%);
+  border-radius: 5px;
+}
+
+.button:hover {
+  background-color: #B30D5D;
+  background-image: -webkit-linear-gradient(bottom, #B30D5D 0%, #FB1886 100%);
+  background-image:         linear-gradient(to bottom, #B30D5D 0%, #FB1886 100%);
+}
+
+#container { /* source : https://stackoverflow.com/questions/47918195/creating-a-basic-html-javascript-leaderboard */
+  width: 600px;
+  height: auto;
+}
+
+.row {
+  position: relative;
+  display: block;
+  width: 100%;
+  height: 40px;
+  border-bottom: 1px solid #AFAFAF;
+}
+
+.name {
+  position: relative;
+  display: inline-block;
+  width: 75%;
+  line-height: 45px;
+}
+
+.score {
+  position: relative;
+  display: inline-block;
+  width: 25%;
+}
+
+.row:nth-child(1) {
+  background: gold;
+}
+
+.row:nth-child(2) {
+  background: #c0c0c0;
+}
+
+.row:nth-child(3) {
+  background: #cd7f32;
+}

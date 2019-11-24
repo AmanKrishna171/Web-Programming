@@ -1,0 +1,421 @@
+<!-- idea for code for entity, player, bullet - source :https://scripterswar.com/tutorial/nodejs  -->
+
+
+<div id="signDiv" style="display:none;">
+    Username: <input id="signDiv-username" type="text"></input><br>
+    Password: <input id="signDiv-password" type="password"></input>
+    <button id="signDiv-signIn">Sign In</button>
+    <button id="signDiv-signUp">Sign Up</button>
+</div>
+
+<title>Zombie Survival</title>
+<link rel="stylesheet" href="./client/style.css" type="text/css" media="screen">
+<script type="text/javascript" src="./client/jquery.2.1.1.min.js"></script>
+</head>
+<body>
+  <div id="menu" >
+           <h1>Zombie Survival</h1>
+      <ul>
+        <button class="button play"> Start Game</button>
+      </ul>
+    </div>  
+  </div>
+  <script> 
+
+  $('.play').click(function() {
+$('#menu').hide();
+signDiv.style.display = 'inline-block';
+});
+  
+  </script>
+  
+<div id="waitinglobby" style="display:none;">
+ <h1>Waiting for players....</h1>
+</div>
+
+<div id="gameDiv" style="display:none;">
+    <canvas id="ctx" width="720" height="720" style="border:1px solid #000000;display: inline;text-align:center;" ></canvas>
+
+    <div id="endScreen" style="display:none;">
+        <h1>Game has ended</h1>
+       </div>  
+ 
+
+
+ <div id="container"> <!-- source : https://stackoverflow.com/questions/47918195/creating-a-basic-html-javascript-leaderboard  -->
+  <div class="row">
+    <div id="first" class="name"></div><div id = "first_score" class="score"></div>
+  </div>
+
+  <div  class="row">
+    <div id= "second" class="name"></div><div id= "second_score" class="score"></div>
+  </div>
+
+  <div  class="row">
+    <div id= "third" class="name"></div><div id= "third_score"  class="score"></div>
+  </div>
+   </div>
+
+  
+ 
+<script src="https://cdn.socket.io/socket.io-1.4.5.js"></script>
+
+<script>
+    
+    var WIDTH = 720;
+    var HEIGHT = 720;
+    var mouseAngle_player=0;
+   var CHECKER = 0;
+    var socket = io();
+    var USERNAME="";
+   
+    //sign
+    var signDiv = document.getElementById('signDiv');
+    var signDivUsername = document.getElementById('signDiv-username');
+    var signDivSignIn = document.getElementById('signDiv-signIn');
+    var signDivSignUp = document.getElementById('signDiv-signUp');
+    var signDivPassword = document.getElementById('signDiv-password');
+
+   
+    signDivSignIn.onclick = function(){
+        socket.emit('signIn',{username:signDivUsername.value,password:signDivPassword.value});
+        USERNAME=signDivUsername.value;
+    }
+    signDivSignUp.onclick = function(){
+        socket.emit('signUp',{username:signDivUsername.value,password:signDivPassword.value});
+         USERNAME=signDivUsername.value;
+    }
+
+
+
+    socket.on('signInResponse',function(data){
+        if(data.success){
+            signDiv.style.display = 'none'; 
+           waitinglobby.style.display = 'inline-block';
+
+        } else
+            alert("Sign in unsuccessul.");
+    });
+    socket.on('signUpResponse',function(data){
+        if(data.success){
+            alert("Sign up successul.");
+        } else
+            alert("Sign up unsuccessul.");
+    });
+ 
+
+
+    socket.on('startGame',function(data){
+        if(data.success){
+           
+            gameDiv.style.display = 'inline-block';
+             waitinglobby.style.display = 'none';
+        } 
+        else{}
+         
+    
+    });
+
+
+    socket.on('endGame',function(data){
+        if(data.success){
+            gameDiv.style.display = 'none';
+            waitinglobby.style.display = 'none';
+            endScreen.style.display = 'inline-block';
+
+        } 
+        else{}
+         
+    
+    });
+
+     
+     
+    socket.on('scoreboard',function(data){
+
+        var same_checker;
+        var same_checker_1;
+     for(var i =0; i<3;i++){
+         var il= data.scoreboard;
+         if (i==0 && il[i].score>0){document.getElementById('first').innerHTML=il[i].username;
+         document.getElementById('first_score').innerHTML=il[i].score;
+         same_checker=il[i].username;
+        }
+         if (i==1 && il[i].score>0  ){document.getElementById('second').innerHTML=il[i].username;
+         document.getElementById('second_score').innerHTML=il[i].score;
+        same_checker_1=il[i].username}
+         if (i==2 && il[i].score>0 ){document.getElementById('third').innerHTML=il[i].username;
+         document.getElementById('third_score').innerHTML=il[i].score;}
+         
+
+
+     }
+
+    });
+
+   
+
+
+    var Img = {};
+	Img.player = new Image();
+    Img.player.src = '/client/img/Player-1.png';
+	Img.bullet = new Image();
+	Img.bullet.src = '/client/img/attack_.png';
+	Img.map = new Image();
+	Img.map.src = '/client/img/level.png';
+   
+    //game
+    var ctx = document.getElementById("ctx").getContext("2d");
+    ctx.font = '25px Arial';
+    
+     
+   
+    var Player = function(initPack,colour){
+        var self = {};
+        self.id = initPack.id;
+        self.number = initPack.number;
+        self.x = initPack.x;
+        self.y = initPack.y;
+        self.hp = initPack.hp;
+        self.hpMax = initPack.hpMax;
+        self.score = initPack.score;
+        self.colour= initPack.color;
+        self.cooldown=initPack.cooldown;
+        self.username=initPack.username;
+
+
+       
+        self.draw = function(){
+            var x = self.x - Player.list[selfId].x + WIDTH/2;
+			var y = self.y - Player.list[selfId].y + HEIGHT/2;
+
+        		 var width = Img.player.width;
+			 var height = Img.player.height;
+			
+			ctx.drawImage(Img.player,0,0,Img.player.width,Img.player.height,x-width/2,y-height/2,width,height);
+        
+            
+        }
+       
+        Player.list[self.id] = self;
+       
+       
+        return self;
+    }
+    Player.list = {};
+ 
+       
+    var Bullet = function(initPack){
+        var self = {};
+        self.id = initPack.id;
+        self.x = initPack.x;
+        self.y = initPack.y;
+
+     
+       
+        self.draw = function(){    
+            var width = Img.bullet.width/2;
+			var height = Img.bullet.height/2;
+			
+			var x = self.x - Player.list[selfId].x + WIDTH/2;
+			var y = self.y - Player.list[selfId].y + HEIGHT/2;
+			
+			ctx.drawImage(Img.bullet,
+				0,0,Img.bullet.width,Img.bullet.height,
+				x-width/2,y-height/2,width,height);
+        }
+       
+        Bullet.list[self.id] = self;       
+        return self;
+    }
+    Bullet.list = {};
+   
+   
+    var selfId = null;
+
+socket.on('init',function(data){	
+    if(data.selfId)
+        selfId = data.selfId;
+    //{ player : [{id:123,number:'1',x:0,y:0},{id:1,number:'2',x:0,y:0}], bullet: []}
+    for(var i = 0 ; i < data.player.length; i++){
+        new Player(data.player[i]);
+    }
+    for(var i = 0 ; i < data.bullet.length; i++){
+        new Bullet(data.bullet[i]);
+    }
+});
+
+socket.on('update',function(data){
+   
+    for(var i = 0 ; i < data.player.length; i++){
+        var pack = data.player[i];
+        var p = Player.list[pack.id];
+        if(p){
+            if(pack.x !== undefined)
+                p.x = pack.x;
+            if(pack.y !== undefined)
+                p.y = pack.y;
+            if(pack.hp !== undefined)
+                p.hp = pack.hp;
+            if(pack.score !== undefined)
+                p.score = pack.score;
+            if(pack.cooldown !== undefined)
+                p.cooldown = pack.cooldown;
+            if(pack.username !== undefined)
+                p.username = pack.username;
+        }
+    }
+    for(var i = 0 ; i < data.bullet.length; i++){
+        var pack = data.bullet[i];
+        var b = Bullet.list[data.bullet[i].id];
+        if(b){
+            if(pack.x !== undefined)
+                b.x = pack.x;
+            if(pack.y !== undefined)
+                b.y = pack.y;
+        }
+    }
+});
+
+socket.on('remove',function(data){
+    
+    for(var i = 0 ; i < data.player.length; i++){
+        delete Player.list[data.player[i]];
+    }
+    for(var i = 0 ; i < data.bullet.length; i++){
+        delete Bullet.list[data.bullet[i]];
+    }
+});
+
+var delayInMilliseconds = 1000; //1 second
+
+setTimeout(function() {
+  //your code to be executed after 1 second
+}, delayInMilliseconds);
+
+   
+	setInterval(function(){
+		if(!selfId)
+			return;
+		ctx.clearRect(0,0,720,720);
+		drawMap(); //map is drawn first
+        drawScore(); // then the score then player
+        drawHealth();
+        drawCoolDown();
+        drawUsername();
+		for(var i in Player.list) 
+			Player.list[i].draw();
+        for(var i in Bullet.list)
+       
+			Bullet.list[i].draw();
+	},25);
+   
+	var drawMap = function(){
+		var x = WIDTH/2 - Player.list[selfId].x;
+		var y = HEIGHT/2 - Player.list[selfId].y;
+		ctx.drawImage(Img.map,x,y);
+	}
+    
+    var drawHealth = function(){
+        var hpWidth = 300* Player.list[selfId].hp / Player.list[selfId].hpMax;
+			ctx.fillStyle = 'red';
+            ctx.fillRect(360 - hpWidth/2,25,hpWidth,20);
+            ctx.font = '25px Arial';
+            ctx.fillStyle = 'white';
+		ctx.fillText("HEALTH ",310,64);
+    }
+
+	var drawUsername = function(){
+        ctx.font = '25px Arial';
+		ctx.fillStyle = 'white';
+		ctx.fillText( USERNAME,20,30);
+	}
+
+	var drawScore = function(){
+        ctx.font = '25px Arial';
+		ctx.fillStyle = 'white';
+		ctx.fillText("Score: "+Player.list[selfId].score,0,715);
+	}
+   
+    var drawCoolDown = function(){
+        
+        var temp_cooldown =Player.list[selfId].cooldown;
+
+
+
+         if ( temp_cooldown<50 ){
+             if (CHECKER<temp_cooldown){ctx.fillText("Heating up!!",360,700);}
+              if (CHECKER>temp_cooldown){
+                  ctx.font = '20px Arial';
+		 
+                  ctx.fillText("Cooling down (Hold attack)",290,410);
+                  ctx.fillText(Player.list[selfId].cooldown,310,750);}
+             
+              var hpWidth = 50* Player.list[selfId].cooldown / 20;
+		 	ctx.fillStyle = 'blue';
+            ctx.fillRect(360 - hpWidth/2,700,hpWidth,20);
+         }
+
+         if ( temp_cooldown>50  ){
+              if (CHECKER<temp_cooldown){ctx.fillText("Heating up",360,750);}
+               if (CHECKER>temp_cooldown){        
+                    ctx.font = '20px Arial';
+                  ctx.fillText("Cooling down (Hold attack)",290,410);
+                  ctx.fillText(Player.list[selfId].cooldown,310,700);}
+
+            ctx.fillText(Player.list[selfId].cooldown,310,700);
+           var hpWidth = 50* Player.list[selfId].cooldown / 20;
+		 	ctx.fillStyle = 'red';
+             ctx.fillRect(360 - hpWidth/2,700,hpWidth,20);
+         }
+
+
+
+
+        
+        CHECKER = temp_cooldown;
+        
+    }
+            
+    
+    
+    document.onkeydown = function(event){
+        if(event.keyCode === 68)    //d
+            socket.emit('keyPress',{inputId:'right',state:true});
+        else if(event.keyCode === 83)   //s
+            socket.emit('keyPress',{inputId:'down',state:true});
+        else if(event.keyCode === 65) //a
+            socket.emit('keyPress',{inputId:'left',state:true});
+        else if(event.keyCode === 87) // w
+            socket.emit('keyPress',{inputId:'up',state:true});
+           
+    }
+    document.onkeyup = function(event){
+        if(event.keyCode === 68)    //d
+            socket.emit('keyPress',{inputId:'right',state:false});
+        else if(event.keyCode === 83)   //s
+            socket.emit('keyPress',{inputId:'down',state:false});
+        else if(event.keyCode === 65) //a
+            socket.emit('keyPress',{inputId:'left',state:false});
+        else if(event.keyCode === 87) // w
+            socket.emit('keyPress',{inputId:'up',state:false});
+    }
+   
+    document.onmousedown = function(event){
+        socket.emit('keyPress',{inputId:'attack',state:true});
+    }
+    document.onmouseup = function(event){
+        socket.emit('keyPress',{inputId:'attack',state:false});
+    }
+    document.onmousemove = function(event){
+        var x = -360 + event.clientX - 8;
+        var y = -360 + event.clientY - 8;
+        var angle = Math.atan2(y,x) / Math.PI * 180;
+        mouseAngle_player=angle;
+        socket.emit('keyPress',{inputId:'mouseAngle',state:angle});
+    }
+   
+   
+   
+   
+</script>  

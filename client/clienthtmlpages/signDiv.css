@@ -1,0 +1,33 @@
+#signDiv{
+    align-content: center;
+    height: 3in;
+}
+
+input{
+    background-color: #000000;
+    font-size: 35px;
+    color: aquamarine;
+}
+
+button{
+    background-color: olivedrab;
+    color: seashell;
+    border-radius: 6px;
+    text-decoration: none;
+    padding: 15px 30px;
+    border: none;
+    font-size: 30px;
+}
+
+button:hover{
+    background-color: darkolivegreen;
+    text-decoration: underline seashell;
+    border: 2px rgb(26, 42, 42);
+}
+
+body{
+    background-color: black;
+    color: blanchedalmond;
+    font-size: 40px;
+    vertical-align: middle;
+}
