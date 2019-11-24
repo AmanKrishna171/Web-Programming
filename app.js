@@ -1,14 +1,14 @@
-var mongojs = require("mongojs");
-var db = mongojs('localhost:27017/myGame', ['account','progress']);
+//var mongojs = require("mongojs");
+//var db = mongojs('localhost:27017/myGame', ['account','progress']);
 
-const MongoClient = require('mongodb').MongoClient;
-const uri = "mongodb+srv://aman:<password>@cluster0-znxui.mongodb.net/test?retryWrites=true&w=majority";
-const client = new MongoClient(uri, { useNewUrlParser: true });
-client.connect(err => {
-  const collection = client.db("test").collection("devices");
-  // perform actions on the collection object
-  client.close();
-});
+// const MongoClient = require('mongodb').MongoClient;
+// const uri = "mongodb+srv://aman:<password>@cluster0-znxui.mongodb.net/test?retryWrites=true&w=majority";
+// const client = new MongoClient(uri, { useNewUrlParser: true });
+// client.connect(err => {
+//   const collection = client.db("test").collection("devices");
+//   // perform actions on the collection object
+//   client.close();
+// });
 
 
 var express = require('express');
