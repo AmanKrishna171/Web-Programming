@@ -321,21 +321,21 @@ var DEBUG = true;
 
 var isValidPassword = function(data,cb){
 	cb(true);
-	db.account.find({username:data.username,password:data.password},function(err,res){
-		if(res.length > 0)
-			cb(true);
-		else
-			cb(false);
-	});
+	// db.account.find({username:data.username,password:data.password},function(err,res){
+	// 	if(res.length > 0)
+	// 		cb(true);
+	// 	else
+	// 		cb(false);
+	// });
 }
 var isUsernameTaken = function(data,cb){
 	cb(true);
-	db.account.find({username:data.username},function(data,res){
-		if(res.length > 0)
-			cb(true);
-		else
-			cb(false);
-	});
+	// db.account.find({username:data.username},function(data,res){
+	// 	if(res.length > 0)
+	// 		cb(true);
+	// 	else
+	// 		cb(false);
+	// });
 }
 var addUser = function(data,cb){
 
