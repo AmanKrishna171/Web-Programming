@@ -284,7 +284,7 @@ Laser.OBJ_state = function(){
 }
 
 var check_password = function(data,cb){
-	//cb(true);
+	return cb(true);
 	client.connect(err => {
 		const db = client.db("user-details").collection("account");
 		db.find({username:data.username,password:data.password},function(err,res){
@@ -297,7 +297,7 @@ var check_password = function(data,cb){
 	  });}
 
 var check_username = function(data,cb){
-	//cb(true);
+	return cb(true);
 	client.connect(err => {
 		const db = client.db("user-details").collection("account");
 		
@@ -310,7 +310,7 @@ var check_username = function(data,cb){
 	  });   
 }
 var insert = function(data,cb){
-
+return cb();
 	client.connect(err => {
 		
 		const db = client.db("user-details").collection("account");
