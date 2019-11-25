@@ -7,14 +7,14 @@ the local db works and its code is on app.js
 
 */
 //note: it connects to DB but cannout read or write
-//start cloud db
+
 const MongoClient = require('mongodb').MongoClient;
 const uri = "mongodb+srv://aman:aman@cluster0-znxui.mongodb.net/test?retryWrites=true&w=majority";
 const client = new MongoClient(uri, { useNewUrlParser: true });
 var express = require('express');
 var app = express();
 var serv = require('http').Server(app);
-//end cloud db
+
 
 //for getting the files
 app.get('/',function(req, res) {

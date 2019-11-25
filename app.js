@@ -292,7 +292,6 @@ var check_password = function(data,cb){
 	
 }
 var check_username = function(data,cb){
-	//cb(true);
 	db.account.find({username:data.username},function(data,res){
 		if(res.length > 0)
 			cb(true);

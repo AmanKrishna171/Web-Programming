@@ -197,7 +197,6 @@ login_signup.style.display = 'inline-block';
     var signDivSignIn = document.getElementById('login_signup-signIn');
     var signDivSignUp = document.getElementById('login_signup-signUp');
     var input_password =  document.getElementById('login_signup-password');
-    input_password=window.btoa(input_password); //encodes password
    
     signDivSignIn.onclick = function(){
         socket.emit('check_signin',{username:input_username.value,password:input_password.value});
@@ -238,6 +237,14 @@ login_signup.style.display = 'inline-block';
         } 
     });
      
+    first.fillStyle = 'white';
+    second.fillStyle = 'white';
+    third.fillStyle = 'white';
+    first_score.fillStyle = 'white';
+    second_score.fillStyle = 'white';
+    third_score.fillStyle = 'white';
+   
+
      
     socket.on('scoreboard',function(data){ //codes for scorebaord 
         var same_checker;  
