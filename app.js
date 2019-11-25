@@ -375,7 +375,7 @@ io.sockets.on('connection', function(socket){
 
 		
 var temp_score={scoreboard:scoreboard}  //makes an object to emit the scoreboard array to client
-	if (playercounter>=3){ socket.emit('scoreboard',temp_score); }//send the info to client for scoreboard
+	if (playercounter>=4){ socket.emit('scoreboard',temp_score); }//send the info to client for scoreboard
 
 	},1000);	
 
