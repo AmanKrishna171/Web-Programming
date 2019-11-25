@@ -1,33 +1,152 @@
-<!-- idea for code for Robot,Laser - source :https://scripterswar.com/tutorial/nodejs  -->
+<!-- idea for code for entity, player, bullet - source :https://scripterswar.com/tutorial/nodejs  -->
 
 
 <title>Sign In</title>
 <head>
-    <link rel="stylesheet" href="./clienthtmlpages/login_signup.css">
+    <!--<link rel="stylesheet" href="./clienthtmlpages/signDiv.css">-->
+    <style>
+            body{
+                font-size: 47px;
+                background-image: url(../client/img/stars.gif);
+                background-repeat: repeat;
+                background-size: contain;
+            }
+            h1{
+                color: rgba(211, 8, 41, 0.849);
+            }
+            #login_signup{
+                font-size: 35px;
+                color: blanchedalmond;
+            
+            }
+            header{
+                font-size: 20px;
+            }
+
+            header div ul{
+                float: right;
+                margin-top: 25px;
+            }
+            header div ul li{
+                display: inline-block;
+            }
+            header div ul li a{
+                color: crimson;
+                padding: 5px 20px;
+                border:0.1px solid crimson ;
+                transition: 0.6s ease;
+                background-color: #0000005b;
+            }
+            header div ul li a:hover{
+                background-color: white;
+                color: black;
+            }
+            
+            input{
+                background-color: rgba(0, 0, 0, 0.561);
+                color: aquamarine;
+                font-size: 35px;
+            }
+            
+            #signDiv-signIn,#signDiv-signUp{
+                background-color: rgba(106, 142, 35, 0.828);
+                color: seashell;
+                border-radius: 6px;
+                text-decoration: none;
+                padding: 15px 30px;
+                border: none;
+                font-size: 30px;
+            }
+            
+            #signDiv-signUp:hover,#signDiv-signIn:hover{
+                background-color: rgba(85, 107, 47, 0.856);
+                text-decoration: underline seashell;
+                border: 2px rgb(26, 42, 42);
+            }
+            
+            .button.play{
+                border: none;
+                background-color: rgba(231, 34, 73, 0.801);
+                color: blanchedalmond;
+                border-radius: 11px;
+                align-content: center;
+                text-align: center;
+                padding: 15px 45px;
+                font-size: 40px;
+            }
+            
+            .button.play:hover{
+                border: 2px rgb(228, 68, 100);
+                background-color: rgba(233, 65, 98, 0.904);
+                color: blanchedalmond;
+                text-decoration: underline;
+                border-radius: 11px;
+                align-content: center;
+                text-align: center;
+                padding: 15px 45px;
+            
+            }
+            
+            #waitinglobby{
+                color: rgba(251, 218, 156, 0.849);
+            
+            }
+            
+            .breathe{
+                animation: breathe 1.89s linear infinite;
+            }
+            
+            @keyframes breathe{
+                50%{
+                    opacity:0.21
+                }
+            }
+            #gameDiv{
+                border: 3px solid whitesmoke;
+                text-align: center;
+                display: inline;
+
+            }
+    </style>
 </head>
+
+<header>
+        <div class= "header">
+            <ul>
+                <li><a href=".">Home</a></li>
+                <li><a href="../client/About.html">About</a></li>
+            </ul>
+        <div >
+</header><br>
 <body align = 'center'>
+        
     <div id="login_signup" style="display:none;" >
-            Username:<input id="login_signup-username" type="text"></input><br>
+            <h1>PVP-Survival</h1>
+            Username:<input id="login_signup-username" type="text"></input><br><br>
             Password: <input id="login_signup-password" type="password"></input><br>
             <br>
-            <button id="login_signup-signIn">Sign In</button>
-            <button id="login_signup-signUp">Sign Up</button>
+            
+                <button id="login_signup-signIn">Sign In</button>
+                <button id="login_signup-signUp">Sign Up</button>
+
     </div>
 </body>
 
 
 <title>PVP-Survival</title>
-<link rel="stylesheet" href="./clienthtmlpages/menu.css" type="text/css" media="screen">
+<!--<link rel="stylesheet" href="./clienthtmlpages/menu.css" type="text/css" media="screen">-->
 <script type="text/javascript" src="./client/jquery.2.1.1.min.js"></script>
 </head>
-    <div  align = "center" id="menu" >
-            <h1>PVP-Survival</h1>
-        <ul>
-            <button class="button play"> Start Game</button>
-        </ul>
-        </div>  
-    </div>
+<body>
+  <div  align = "center" id="menu" >
+           <h1>PVP-Survival</h1>
+      
+        <button class="button play"> Start Game</button>
+      
+    </div>  
+  </div>
   <script> 
+
   $('.play').click(function() {
 $('#menu').hide();
 login_signup.style.display = 'inline-block';
@@ -36,36 +155,30 @@ login_signup.style.display = 'inline-block';
   </script>
   
 <div id="waitinglobby" style="display:none;">
- <h1>Waiting for players....</h1>
+ <h1 class = "breathe">Waiting for players....</h1>
 </div>
 
-
-
-<!-- game canvas -->
 <div id="gameDiv" style="display:none;">
-    <canvas id="ctx" width="720" height="720" style="border:1px solid #000000;display: inline;text-align:center;" ></canvas>
+    <canvas id="ctx" width="720" height="720"></canvas>
 
-
-
-
-<div id="container" > 
-    <!-- source : https://stackoverflow.com/questions/47918195/creating-a-basic-html-javascript-leaderboard  -->
-    <div class="row">
-        <div id="first" class="name"></div><div id = "first_score" class="score"></div>
-    </div>
-    
-    <div  class="row">
-        <div id= "second" class="name"></div><div id= "second_score" class="score"></div>
-    </div>
-    
-    <div  class="row">
-        <div id= "third" class="name"></div><div id= "third_score"  class="score"></div>
-    </div>
+    <div id="container" align = "center" > <!-- source : https://stackoverflow.com/questions/47918195/creating-a-basic-html-javascript-leaderboard  -->
+        <div class="row">
+          <div id="first" class="name"></div><div id = "first_score" class="score"></div>
         </div>
+      
+        <div  class="row">
+          <div id= "second" class="name"></div><div id= "second_score" class="score"></div>
+        </div>
+      
+        <div  class="row">
+          <div id= "third" class="name"></div><div id= "third_score"  class="score"></div>
+        </div>
+         </div>
 
-<div id="endScreen" style="display:none;">
-    <h1>Game has ended</h1>
-    </div>  
+    <div id="endScreen" style="display:none;">
+        <h1>Game has ended</h1>
+       </div>  
+ 
  
 <script src="https://cdn.socket.io/socket.io-1.4.5.js"></script>
 

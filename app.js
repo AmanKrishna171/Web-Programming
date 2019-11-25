@@ -1,18 +1,19 @@
 
-//use the below code to run locally  and comment cloud db from start to end
-//var mongojs = require("mongojs");
-//var db = mongojs('localhost:27017/myGame', ['account','progress']); //for local host 
+//use the below code to run locally
 
 
-//note: it connects to DB but cannout read or write
-//start cloud db
-const MongoClient = require('mongodb').MongoClient;
-const uri = "mongodb+srv://aman:aman@cluster0-znxui.mongodb.net/test?retryWrites=true&w=majority";
-const client = new MongoClient(uri, { useNewUrlParser: true });
+/*
+the local db works, please do change the name of this file to app.js and already exisitng app.js to appcopy.js
+
+**databasse is called myGame with database called account, with username and password in table : account.**
+*/
+
+// 
+var mongojs = require("mongojs");
+var db = mongojs('localhost:27017/myGame', ['account']); //for local host 
 var express = require('express');
 var app = express();
 var serv = require('http').Server(app);
-//end cloud db
 
 //for getting the files
 app.get('/',function(req, res) {
@@ -282,43 +283,27 @@ Laser.OBJ_state = function(){
 }
 
 var check_password = function(data,cb){
-	//cb(true);
-	data.username=window.btoa(data.username); //checks with encoded password
-	client.connect(err => {
-		const db = client.db("user-details").collection("account");
-		db.find({username:data.username,password:data.password},function(err,res){
-			if(res.length > 0)
-				cb(true);
-			else
-				cb(true);
-		});
-		
-	  });
+	db.account.find({username:data.username,password:data.password},function(err,res){
+		if(res.length > 0)
+			cb(true);
+		else
+			cb(false);
+	});
 	
 }
 var check_username = function(data,cb){
 	//cb(true);
-	client.connect(err => {
-		const db = client.db("user-details").collection("account");
-		
-		db.find({username:data.username},function(data,res){
-	 	if(res.length > 0)
-			 cb(true);
-			 
-	 	else cb(true);
-	 });
-	  });   
+	db.account.find({username:data.username},function(data,res){
+		if(res.length > 0)
+			cb(true);
+		else
+			cb(false);
+	}); 
 }
 var insert = function(data,cb){
-	data.username=window.btoa(data.username); //stores encoded password
-	client.connect(err => {
-		
-		const db = client.db("user-details").collection("account");
-		// perform actions on the collection object
-		db.insert({username:data.username,password:data.password},function(err){ //adds user
-		cb();	});
-	});
-     }
+	db.account.insert({username:data.username,password:data.password},function(err){ //adds user
+		cb();
+     });}
 
 var playercounter=0; // global
 var io = require('socket.io')(serv,{});
