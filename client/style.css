@@ -105,3 +105,12 @@ a {
 .row:nth-child(3) {
   background: #cd7f32;
 }
+
+div.name *
+{
+    color: white;
+}
+div.score *
+{
+    color: white;
+}

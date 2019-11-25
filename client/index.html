@@ -106,7 +106,48 @@
                 text-align: center;
                 display: inline;
 
+                
+
             }
+            #container { /* source : https://stackoverflow.com/questions/47918195/creating-a-basic-html-javascript-leaderboard */
+  width: 600px;
+  height: auto;
+}
+
+.row {
+  position: relative;
+  display: block;
+  width: 100%;
+  height: 40px;
+  border-bottom: 1px solid #AFAFAF;
+}
+
+.name {
+  position: relative;
+  display: inline-block;
+  width: 75%;
+  line-height: 45px;
+}
+
+.score {
+  position: relative;
+  display: inline-block;
+  width: 25%;
+}
+
+.row:nth-child(1) {
+  background: gold;
+}
+
+.row:nth-child(2) {
+  background: #c0c0c0;
+}
+
+.row:nth-child(3) {
+  background: #cd7f32;
+}
+
+
     </style>
 </head>
 
@@ -158,12 +199,13 @@ login_signup.style.display = 'inline-block';
  <h1 class = "breathe">Waiting for players....</h1>
 </div>
 
+
 <div id="gameDiv" style="display:none;">
     <canvas id="ctx" width="720" height="720"></canvas>
 
     <div id="container" align = "center" > <!-- source : https://stackoverflow.com/questions/47918195/creating-a-basic-html-javascript-leaderboard  -->
         <div class="row">
-          <div id="first" class="name"></div><div id = "first_score" class="score"></div>
+          <div id="first" class="name" ></div><div id = "first_score" class="score"></div>
         </div>
       
         <div  class="row">

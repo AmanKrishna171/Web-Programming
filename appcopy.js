@@ -7,17 +7,6 @@ the local db works, please do change the name of this file to app.js and already
 
 **databasse is called myGame with database called account, with username and password in table : account.**
 */
-<<<<<<< HEAD:appcopyy.js
-//note: it connects to DB but cannout read or write
-
-const MongoClient = require('mongodb').MongoClient;
-const uri = "mongodb+srv://aman:aman@cluster0-znxui.mongodb.net/test?retryWrites=true&w=majority";
-const client = new MongoClient(uri, { useNewUrlParser: true });
-var express = require('express');
-var app = express();
-var serv = require('http').Server(app);
-
-=======
 
 // 
 var mongojs = require("mongojs");
@@ -25,7 +14,6 @@ var db = mongojs('localhost:27017/myGame', ['account']); //for local host
 var express = require('express');
 var app = express();
 var serv = require('http').Server(app);
->>>>>>> 9113ea451c78b67eed6726f1f3a64baeee1d46ad:appcopy.js
 
 //for getting the files
 app.get('/',function(req, res) {
