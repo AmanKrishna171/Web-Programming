@@ -1,14 +1,16 @@
-//var mongojs = require("mongojs");
+var mongojs = require("mongojs");
 //var db = mongojs('localhost:27017/myGame', ['account','progress']);
 
-// const MongoClient = require('mongodb').MongoClient;
-// const uri = "mongodb+srv://aman:<password>@cluster0-znxui.mongodb.net/test?retryWrites=true&w=majority";
-// const client = new MongoClient(uri, { useNewUrlParser: true });
-// client.connect(err => {
-//   const collection = client.db("test").collection("devices");
-//   // perform actions on the collection object
-//   client.close();
-// });
+
+const MongoClient = require('mongodb').MongoClient;
+const uri = "mongodb+srv://aman:aman@cluster0-znxui.mongodb.net/test?retryWrites=true&w=majority";
+const client = new MongoClient(uri, { useNewUrlParser: true });
+client.connect(err => {
+  const db = client.db("user-details").collection("account");
+  // perform actions on the collection object
+  
+});
+
 
 
 var express = require('express');
@@ -124,9 +126,10 @@ var Player = function(param){
 
 	
 	self.updateSpd = function(){
-
-		if(self.pressingRight && self.x<1510)
+		
+		if(self.pressingRight && self.x<1478)
 			self.spdX = self.maxSpd;
+			
 		else if(self.pressingLeft && self.x>35)
 			self.spdX = -self.maxSpd;
 		else
@@ -134,7 +137,7 @@ var Player = function(param){
 		
 		if(self.pressingUp&& self.y>40)
 			self.spdY = -self.maxSpd;
-		else if(self.pressingDown && self.y<1490)
+		else if(self.pressingDown && self.y<1479)
 			self.spdY = self.maxSpd;
 		else
 			self.spdY = 0;		
@@ -320,28 +323,43 @@ Bullet.getAllInitPack = function(){
 var DEBUG = true;
 
 var isValidPassword = function(data,cb){
-	cb(true);
-	// db.account.find({username:data.username,password:data.password},function(err,res){
-	// 	if(res.length > 0)
-	// 		cb(true);
-	// 	else
-	// 		cb(false);
-	// });
+	//cb(true);
+	client.connect(err => {
+		const db = client.db("user-details").collection("account");
+		db.find({username:data.username,password:data.password},function(err,res){
+			if(res.length > 0)
+				cb(true);
+			else
+				cb(true);
+		});
+		
+	  });
+	
 }
 var isUsernameTaken = function(data,cb){
-	cb(true);
-	// db.account.find({username:data.username},function(data,res){
-	// 	if(res.length > 0)
-	// 		cb(true);
-	// 	else
-	// 		cb(false);
-	// });
+	//cb(true);
+	client.connect(err => {
+		const db = client.db("user-details").collection("account");
+		
+		db.find({username:data.username},function(data,res){
+	 	if(res.length > 0)
+	 		cb(true);
+	 	else
+	 		cb(true);
+	 });
+	  });
+     
 }
 var addUser = function(data,cb){
-
-	db.account.insert({username:data.username,password:data.password},function(err){ //adds user
+	client.connect(err => {
+		const db = client.db("user-details").collection("account");
+		// perform actions on the collection object
+		db.insert({username:data.username,password:data.password},function(err){ //adds user
 		cb();
 	});
+	  });
+
+	
 
 
 }
@@ -386,7 +404,7 @@ io.sockets.on('connection', function(socket){
 		   }
 
 		   
-		   if (playercounter >= 4){socket.emit('startGame',{success:true}); //only when 4 players join the game starts
+		   if (playercounter >= 3){socket.emit('startGame',{success:true}); //only when 4 players join the game starts
 		   console.log("game has started")
 		   stopper=false;}
 		}
@@ -406,14 +424,15 @@ io.sockets.on('connection', function(socket){
  for(var i in Player.list){
   scoreboard[score_loop_counter]=Player.list[i];  //makes an array of scores 
 			   score_loop_counter++;
+			  
 
 	}
 	scoreboard=scoreboard.sort((a,b) => (a.score > b.score) ? 1 : ((b.score > a.score) ? -1 : 0)); //sort them according to score (source :https://stackoverflow.com/questions/1129216/sort-array-of-objects-by-string-property-value)
 	scoreboard=scoreboard.reverse(); // reverse the array as it is sorted in ascending order
-	
+
 		
 var temp_score={scoreboard:scoreboard}
-	 socket.emit('scoreboard',temp_score); //send the info to client for scoreboard
+	if (playercounter>=3){ socket.emit('scoreboard',temp_score); }//send the info to client for scoreboard
 
 	},1000);	
 

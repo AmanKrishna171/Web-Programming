@@ -1,4 +1,4 @@
-<html>
+
     <title>Menu</title>
     <head>
         <link rel="stylesheet" href="./menu.css">
@@ -6,8 +6,28 @@
     <body align = "center">
         
         <div id="menu">
-                <h1>Zombie Survival</h1>     
+                <h1>PVP Survival</h1>     
                 <button class="button play"> Start Game</button>
         </div>  
     </body>
-</html>
+
+    <title>Zombie Survival</title>
+    <link rel="stylesheet" href="./client/style.css" type="text/css" media="screen">
+    <script type="text/javascript" src="./client/jquery.2.1.1.min.js"></script>
+    </head>
+    <body>
+      <div id="menu" >
+               <h1>Zombie Survival</h1>
+          <ul>
+            <button class="button play"> Start Game</button>
+          </ul>
+        </div>  
+      </div>
+      <script> 
+    
+      $('.play').click(function() {
+    $('#menu').hide();
+    signDiv.style.display = 'inline-block';
+    });
+      
+      </script>

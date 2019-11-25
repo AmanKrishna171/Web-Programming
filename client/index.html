@@ -1,20 +1,28 @@
 <!-- idea for code for entity, player, bullet - source :https://scripterswar.com/tutorial/nodejs  -->
 
 
-<div id="signDiv" style="display:none;">
-    Username: <input id="signDiv-username" type="text"></input><br>
-    Password: <input id="signDiv-password" type="password"></input>
-    <button id="signDiv-signIn">Sign In</button>
-    <button id="signDiv-signUp">Sign Up</button>
-</div>
+<title>Sign In</title>
+<head>
+    <link rel="stylesheet" href="./clienthtmlpages/signDiv.css">
+</head>
+<body align = 'center'>
+    <div id="signDiv" style="display:none;" >
+            Username:<input id="signDiv-username" type="text"></input><br>
+            Password: <input id="signDiv-password" type="password"></input><br>
+            <br>
+            <button id="signDiv-signIn">Sign In</button>
+            <button id="signDiv-signUp">Sign Up</button>
+    </div>
+</body>
 
-<title>Zombie Survival</title>
-<link rel="stylesheet" href="./client/style.css" type="text/css" media="screen">
+
+<title>PVP-Survival</title>
+<link rel="stylesheet" href="./clienthtmlpages/menu.css" type="text/css" media="screen">
 <script type="text/javascript" src="./client/jquery.2.1.1.min.js"></script>
 </head>
 <body>
-  <div id="menu" >
-           <h1>Zombie Survival</h1>
+  <div  align = "center" id="menu" >
+           <h1>PVP-Survival</h1>
       <ul>
         <button class="button play"> Start Game</button>
       </ul>
@@ -36,25 +44,27 @@ signDiv.style.display = 'inline-block';
 <div id="gameDiv" style="display:none;">
     <canvas id="ctx" width="720" height="720" style="border:1px solid #000000;display: inline;text-align:center;" ></canvas>
 
+    <div id="container" align = "center" > <!-- source : https://stackoverflow.com/questions/47918195/creating-a-basic-html-javascript-leaderboard  -->
+        <div class="row">
+          <div id="first" class="name"></div><div id = "first_score" class="score"></div>
+        </div>
+      
+        <div  class="row">
+          <div id= "second" class="name"></div><div id= "second_score" class="score"></div>
+        </div>
+      
+        <div  class="row">
+          <div id= "third" class="name"></div><div id= "third_score"  class="score"></div>
+        </div>
+         </div>
+
     <div id="endScreen" style="display:none;">
         <h1>Game has ended</h1>
        </div>  
  
 
 
- <div id="container"> <!-- source : https://stackoverflow.com/questions/47918195/creating-a-basic-html-javascript-leaderboard  -->
-  <div class="row">
-    <div id="first" class="name"></div><div id = "first_score" class="score"></div>
-  </div>
 
-  <div  class="row">
-    <div id= "second" class="name"></div><div id= "second_score" class="score"></div>
-  </div>
-
-  <div  class="row">
-    <div id= "third" class="name"></div><div id= "third_score"  class="score"></div>
-  </div>
-   </div>
 
   
  
@@ -74,7 +84,7 @@ signDiv.style.display = 'inline-block';
     var signDivUsername = document.getElementById('signDiv-username');
     var signDivSignIn = document.getElementById('signDiv-signIn');
     var signDivSignUp = document.getElementById('signDiv-signUp');
-    var signDivPassword = document.getElementById('signDiv-password');
+    var signDivPassword =  document.getElementById('signDiv-password');
 
    
     signDivSignIn.onclick = function(){
@@ -137,11 +147,11 @@ signDiv.style.display = 'inline-block';
         var same_checker_1;
      for(var i =0; i<3;i++){
          var il= data.scoreboard;
-         if (i==0 && il[i].score>0){document.getElementById('first').innerHTML=il[i].username;
+         if (i==0 && il[i].score>0){document.getElementById('first').innerHTML=atob(il[i].username);
          document.getElementById('first_score').innerHTML=il[i].score;
          same_checker=il[i].username;
         }
-         if (i==1 && il[i].score>0  ){document.getElementById('second').innerHTML=il[i].username;
+         if (i==1 && il[i].score>0  ){document.getElementById('second').innerHTML=atob(il[i].username);
          document.getElementById('second_score').innerHTML=il[i].score;
         same_checker_1=il[i].username}
          if (i==2 && il[i].score>0 ){document.getElementById('third').innerHTML=il[i].username;
@@ -408,7 +418,7 @@ setTimeout(function() {
         socket.emit('keyPress',{inputId:'attack',state:false});
     }
     document.onmousemove = function(event){
-        var x = -360 + event.clientX - 8;
+        var x = -740 + event.clientX - 8;
         var y = -360 + event.clientY - 8;
         var angle = Math.atan2(y,x) / Math.PI * 180;
         mouseAngle_player=angle;
