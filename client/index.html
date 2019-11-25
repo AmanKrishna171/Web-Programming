@@ -1,17 +1,17 @@
-<!-- idea for code for entity, player, bullet - source :https://scripterswar.com/tutorial/nodejs  -->
+<!-- idea for code for Robot,Laser - source :https://scripterswar.com/tutorial/nodejs  -->
 
 
 <title>Sign In</title>
 <head>
-    <link rel="stylesheet" href="./clienthtmlpages/signDiv.css">
+    <link rel="stylesheet" href="./clienthtmlpages/login_signup.css">
 </head>
 <body align = 'center'>
-    <div id="signDiv" style="display:none;" >
-            Username:<input id="signDiv-username" type="text"></input><br>
-            Password: <input id="signDiv-password" type="password"></input><br>
+    <div id="login_signup" style="display:none;" >
+            Username:<input id="login_signup-username" type="text"></input><br>
+            Password: <input id="login_signup-password" type="password"></input><br>
             <br>
-            <button id="signDiv-signIn">Sign In</button>
-            <button id="signDiv-signUp">Sign Up</button>
+            <button id="login_signup-signIn">Sign In</button>
+            <button id="login_signup-signUp">Sign Up</button>
     </div>
 </body>
 
@@ -20,19 +20,17 @@
 <link rel="stylesheet" href="./clienthtmlpages/menu.css" type="text/css" media="screen">
 <script type="text/javascript" src="./client/jquery.2.1.1.min.js"></script>
 </head>
-<body>
-  <div  align = "center" id="menu" >
-           <h1>PVP-Survival</h1>
-      <ul>
-        <button class="button play"> Start Game</button>
-      </ul>
-    </div>  
-  </div>
+    <div  align = "center" id="menu" >
+            <h1>PVP-Survival</h1>
+        <ul>
+            <button class="button play"> Start Game</button>
+        </ul>
+        </div>  
+    </div>
   <script> 
-
   $('.play').click(function() {
 $('#menu').hide();
-signDiv.style.display = 'inline-block';
+login_signup.style.display = 'inline-block';
 });
   
   </script>
@@ -41,351 +39,305 @@ signDiv.style.display = 'inline-block';
  <h1>Waiting for players....</h1>
 </div>
 
+
+
+<!-- game canvas -->
 <div id="gameDiv" style="display:none;">
     <canvas id="ctx" width="720" height="720" style="border:1px solid #000000;display: inline;text-align:center;" ></canvas>
 
-    <div id="container" align = "center" > <!-- source : https://stackoverflow.com/questions/47918195/creating-a-basic-html-javascript-leaderboard  -->
-        <div class="row">
-          <div id="first" class="name"></div><div id = "first_score" class="score"></div>
+
+
+
+<div id="container" > 
+    <!-- source : https://stackoverflow.com/questions/47918195/creating-a-basic-html-javascript-leaderboard  -->
+    <div class="row">
+        <div id="first" class="name"></div><div id = "first_score" class="score"></div>
+    </div>
+    
+    <div  class="row">
+        <div id= "second" class="name"></div><div id= "second_score" class="score"></div>
+    </div>
+    
+    <div  class="row">
+        <div id= "third" class="name"></div><div id= "third_score"  class="score"></div>
+    </div>
         </div>
-      
-        <div  class="row">
-          <div id= "second" class="name"></div><div id= "second_score" class="score"></div>
-        </div>
-      
-        <div  class="row">
-          <div id= "third" class="name"></div><div id= "third_score"  class="score"></div>
-        </div>
-         </div>
 
-    <div id="endScreen" style="display:none;">
-        <h1>Game has ended</h1>
-       </div>  
- 
-
-
-
-
-  
+<div id="endScreen" style="display:none;">
+    <h1>Game has ended</h1>
+    </div>  
  
 <script src="https://cdn.socket.io/socket.io-1.4.5.js"></script>
 
 <script>
     
-    var WIDTH = 720;
-    var HEIGHT = 720;
+    var Canvas_width = 720;
+    var Canvas_length = 720;
     var mouseAngle_player=0;
    var CHECKER = 0;
     var socket = io();
     var USERNAME="";
    
     //sign
-    var signDiv = document.getElementById('signDiv');
-    var signDivUsername = document.getElementById('signDiv-username');
-    var signDivSignIn = document.getElementById('signDiv-signIn');
-    var signDivSignUp = document.getElementById('signDiv-signUp');
-    var signDivPassword =  document.getElementById('signDiv-password');
-
+    var login_signup = document.getElementById('login_signup');
+    var input_username = document.getElementById('login_signup-username');
+    var signDivSignIn = document.getElementById('login_signup-signIn');
+    var signDivSignUp = document.getElementById('login_signup-signUp');
+    var input_password =  document.getElementById('login_signup-password');
+    input_password=window.btoa(input_password); //encodes password
    
     signDivSignIn.onclick = function(){
-        socket.emit('signIn',{username:signDivUsername.value,password:signDivPassword.value});
-        USERNAME=signDivUsername.value;
+        socket.emit('check_signin',{username:input_username.value,password:input_password.value});
+        USERNAME=input_username.value;
     }
     signDivSignUp.onclick = function(){
-        socket.emit('signUp',{username:signDivUsername.value,password:signDivPassword.value});
-         USERNAME=signDivUsername.value;
+        socket.emit('add_user(signup)',{username:input_username.value,password:input_password.value});
+         USERNAME=input_username.value;
     }
-
-
-
-    socket.on('signInResponse',function(data){
-        if(data.success){
-            signDiv.style.display = 'none'; 
+    socket.on('signin_state',function(data){
+        if(data.check){
+            login_signup.style.display = 'none'; 
            waitinglobby.style.display = 'inline-block';
-
         } else
             alert("Sign in unsuccessul.");
     });
     socket.on('signUpResponse',function(data){
-        if(data.success){
+        if(data.check){
             alert("Sign up successul.");
         } else
             alert("Sign up unsuccessul.");
     });
  
-
-
     socket.on('startGame',function(data){
-        if(data.success){
+        if(data.check){
            
             gameDiv.style.display = 'inline-block';
              waitinglobby.style.display = 'none';
         } 
-        else{}
          
     
     });
-
-
     socket.on('endGame',function(data){
-        if(data.success){
+        if(data.check){
             gameDiv.style.display = 'none';
             waitinglobby.style.display = 'none';
             endScreen.style.display = 'inline-block';
-
         } 
-        else{}
-         
-    
     });
-
      
      
-    socket.on('scoreboard',function(data){
-
-        var same_checker;
-        var same_checker_1;
-     for(var i =0; i<3;i++){
+    socket.on('scoreboard',function(data){ //codes for scorebaord 
+        var same_checker;  
+        var same_checker_1;//used to prevent same name from repeating on scoreboard
+     for(var i =0; i<3;i++){ //starts only when score is more than 0
          var il= data.scoreboard;
-         if (i==0 && il[i].score>0){document.getElementById('first').innerHTML=atob(il[i].username);
+         if (i==0 && il[i].score>0){document.getElementById('first').innerHTML=il[i].username;
          document.getElementById('first_score').innerHTML=il[i].score;
          same_checker=il[i].username;
         }
-         if (i==1 && il[i].score>0  ){document.getElementById('second').innerHTML=atob(il[i].username);
+         if (i==1 && il[i].score>0  ){document.getElementById('second').innerHTML=il[i].username;
          document.getElementById('second_score').innerHTML=il[i].score;
         same_checker_1=il[i].username}
          if (i==2 && il[i].score>0 ){document.getElementById('third').innerHTML=il[i].username;
          document.getElementById('third_score').innerHTML=il[i].score;}
          
-
-
      }
-
     });
-
    
-
-
     var Img = {};
-	Img.player = new Image();
-    Img.player.src = '/client/img/Player-1.png';
-	Img.bullet = new Image();
-	Img.bullet.src = '/client/img/attack_.png';
-	Img.map = new Image();
-	Img.map.src = '/client/img/level.png';
-   
-    //game
-    var ctx = document.getElementById("ctx").getContext("2d");
-    ctx.font = '25px Arial';
+	Img.robot_obj = new Image();
+    Img.robot_obj.src = '/client/img/Player-1.png';
+	Img.laser_object = new Image();
+	Img.laser_object.src = '/client/img/attack_.png';
+	Img.level = new Image();
+	Img.level.src = '/client/img/level.png';
+    var game_canvas = document.getElementById("ctx").getContext("2d");
+    game_canvas.font = '25px Arial';
     
      
    
-    var Player = function(initPack,colour){
-        var self = {};
-        self.id = initPack.id;
-        self.number = initPack.number;
-        self.x = initPack.x;
-        self.y = initPack.y;
-        self.hp = initPack.hp;
-        self.hpMax = initPack.hpMax;
-        self.score = initPack.score;
-        self.colour= initPack.color;
-        self.cooldown=initPack.cooldown;
-        self.username=initPack.username;
-
-
-       
-        self.draw = function(){
-            var x = self.x - Player.list[selfId].x + WIDTH/2;
-			var y = self.y - Player.list[selfId].y + HEIGHT/2;
-
-        		 var width = Img.player.width;
-			 var height = Img.player.height;
-			
-			ctx.drawImage(Img.player,0,0,Img.player.width,Img.player.height,x-width/2,y-height/2,width,height);
-        
-            
-        }
-       
-        Player.list[self.id] = self;
-       
-       
-        return self;
-    }
-    Player.list = {};
+var Robot = function(start_state,colour){
+    var object = {};
+    object.mo_id = start_state.mo_id;
+    object.number = start_state.number;
+    object.obj_x = start_state.obj_x;
+    object.obj_y = start_state.obj_y;
+    object.obj_health_state = start_state.obj_health_state;
+    object.obj_health_limit = start_state.obj_health_limit;
+    object.score = start_state.score;
+    object.colour= start_state.color;
+    object.cooldown=start_state.cooldown;
+    object.username=start_state.username;
+    
+    object.render = function(){
+        var obj_x = object.obj_x - Robot.list[selfId].obj_x + Canvas_width/2;
+        var obj_y = object.obj_y - Robot.list[selfId].obj_y + Canvas_length/2;
+        var width = Img.robot_obj.width;
+        var height = Img.robot_obj.height;
+        game_canvas.drawImage(Img.robot_obj,0,0,Img.robot_obj.width,Img.robot_obj.height,obj_x-width/2,obj_y-height/2,width,height);}
+    
+    Robot.list[object.mo_id] = object;
+    return object;
+}
+    Robot.list = {};
  
        
-    var Bullet = function(initPack){
-        var self = {};
-        self.id = initPack.id;
-        self.x = initPack.x;
-        self.y = initPack.y;
-
+var Laser = function(start_state){
+    var object = {};
+    object.mo_id = start_state.mo_id;
+    object.obj_x = start_state.obj_x;
+    object.obj_y = start_state.obj_y;
      
-       
-        self.draw = function(){    
-            var width = Img.bullet.width/2;
-			var height = Img.bullet.height/2;
-			
-			var x = self.x - Player.list[selfId].x + WIDTH/2;
-			var y = self.y - Player.list[selfId].y + HEIGHT/2;
-			
-			ctx.drawImage(Img.bullet,
-				0,0,Img.bullet.width,Img.bullet.height,
-				x-width/2,y-height/2,width,height);
-        }
-       
-        Bullet.list[self.id] = self;       
-        return self;
-    }
-    Bullet.list = {};
-   
-   
-    var selfId = null;
+    object.render = function(){    
+        var width = Img.laser_object.width/2;
+        var height = Img.laser_object.height/2;
+        
+        var obj_x = object.obj_x - Robot.list[selfId].obj_x + Canvas_width/2;
+        var obj_y = object.obj_y - Robot.list[selfId].obj_y + Canvas_length/2;
+        
+        game_canvas.drawImage(Img.laser_object,
+            0,0,Img.laser_object.width,Img.laser_object.height,
+            obj_x-width/2,obj_y-height/2,width,height); }
+    
+    Laser.list[object.mo_id] = object;       
+    return object;
+}
 
-socket.on('init',function(data){	
+ Laser.list = {};
+   
+   
+var selfId = null;
+socket.on('start_state',function(data){	
     if(data.selfId)
         selfId = data.selfId;
-    //{ player : [{id:123,number:'1',x:0,y:0},{id:1,number:'2',x:0,y:0}], bullet: []}
-    for(var i = 0 ; i < data.player.length; i++){
-        new Player(data.player[i]);
+    for(var objects = 0 ; objects < data.robot_obj.length; objects++){
+        new Robot(data.robot_obj[objects]);
     }
-    for(var i = 0 ; i < data.bullet.length; i++){
-        new Bullet(data.bullet[i]);
+    for(var objects = 0 ; objects < data.laser_object.length; objects++){
+        new Laser(data.laser_object[objects]);
     }
 });
 
-socket.on('update',function(data){
+socket.on('game_state',function(data){ //player movement requests to server
    
-    for(var i = 0 ; i < data.player.length; i++){
-        var pack = data.player[i];
-        var p = Player.list[pack.id];
+    for(var i = 0 ; i < data.robot_obj.length; i++){
+        var game_state = data.robot_obj[i];
+        var p = Robot.list[game_state.mo_id];
         if(p){
-            if(pack.x !== undefined)
-                p.x = pack.x;
-            if(pack.y !== undefined)
-                p.y = pack.y;
-            if(pack.hp !== undefined)
-                p.hp = pack.hp;
-            if(pack.score !== undefined)
-                p.score = pack.score;
-            if(pack.cooldown !== undefined)
-                p.cooldown = pack.cooldown;
-            if(pack.username !== undefined)
-                p.username = pack.username;
+            if(game_state.obj_x !== undefined)
+                p.obj_x = game_state.obj_x;
+            if(game_state.obj_y !== undefined)
+                p.obj_y = game_state.obj_y;
+            if(game_state.obj_health_state !== undefined)
+                p.obj_health_state = game_state.obj_health_state;
+            if(game_state.score !== undefined)
+                p.score = game_state.score;
+            if(game_state.cooldown !== undefined)
+                p.cooldown = game_state.cooldown;
+            if(game_state.username !== undefined)
+                p.username = game_state.username;
         }
     }
-    for(var i = 0 ; i < data.bullet.length; i++){
-        var pack = data.bullet[i];
-        var b = Bullet.list[data.bullet[i].id];
+    for(var i = 0 ; i < data.laser_object.length; i++){
+        var game_state = data.laser_object[i];
+        var b = Laser.list[data.laser_object[i].mo_id];
         if(b){
-            if(pack.x !== undefined)
-                b.x = pack.x;
-            if(pack.y !== undefined)
-                b.y = pack.y;
+            if(game_state.obj_x !== undefined)
+                b.obj_x = game_state.obj_x;
+            if(game_state.obj_y !== undefined)
+                b.obj_y = game_state.obj_y;
         }
     }
 });
-
-socket.on('remove',function(data){
+socket.on('logged_out',function(data){
     
-    for(var i = 0 ; i < data.player.length; i++){
-        delete Player.list[data.player[i]];
+    for(var objects = 0 ; objects < data.robot_obj.length; objects++){
+        delete Robot.list[data.robot_obj[objects]];
     }
-    for(var i = 0 ; i < data.bullet.length; i++){
-        delete Bullet.list[data.bullet[i]];
+    for(var objects = 0 ; objects < data.laser_object.length; objects++){
+        delete Laser.list[data.laser_object[objects]];
     }
 });
 
-var delayInMilliseconds = 1000; //1 second
 
-setTimeout(function() {
-  //your code to be executed after 1 second
-}, delayInMilliseconds);
+var renderAll=function(){
+    if(!selfId)
+        return;
+    game_canvas.clearRect(0,0,720,720);
+    render_level(); //level is drawn first
+    drawScore(); // then the score then robot_obj
+    render_healthbar(); //healthbar
+    render_CoolDownBar();//cooldownbar
+    render_username(); //player username
+};
 
-   
-	setInterval(function(){
-		if(!selfId)
-			return;
-		ctx.clearRect(0,0,720,720);
-		drawMap(); //map is drawn first
-        drawScore(); // then the score then player
-        drawHealth();
-        drawCoolDown();
-        drawUsername();
-		for(var i in Player.list) 
-			Player.list[i].draw();
-        for(var i in Bullet.list)
-       
-			Bullet.list[i].draw();
-	},25);
-   
-	var drawMap = function(){
-		var x = WIDTH/2 - Player.list[selfId].x;
-		var y = HEIGHT/2 - Player.list[selfId].y;
-		ctx.drawImage(Img.map,x,y);
-	}
+
+
+setInterval(function(){
+    if(!selfId)
+        return;
+    renderAll(); //draw all objects
+    for(var i in Robot.list) 
+        Robot.list[i].render();
+    for(var i in Laser.list)
+        Laser.list[i].render();
+},25);
+
+var render_level = function(){
+    var obj_x = Canvas_width/2 - Robot.list[selfId].obj_x;
+    var obj_y = Canvas_length/2 - Robot.list[selfId].obj_y;
+    game_canvas.drawImage(Img.level,obj_x,obj_y);
+}
+
+var render_healthbar = function(){
+    var hpWidth = 300* Robot.list[selfId].obj_health_state / Robot.list[selfId].obj_health_limit;
+        game_canvas.fillStyle = 'red';
+        game_canvas.fillRect(360 - hpWidth/2,25,hpWidth,20);
+        game_canvas.font = '25px Arial';
+        game_canvas.fillStyle = 'white';
+    game_canvas.fillText("HEALTH ",310,64);
+}
+var render_username = function(){
+    game_canvas.font = '25px Arial';
+    game_canvas.fillStyle = 'white';
+    game_canvas.fillText( USERNAME,20,30);
+}
+var drawScore = function(){
+    game_canvas.font = '25px Arial';
+    game_canvas.fillStyle = 'white';
+    game_canvas.fillText("Score: "+Robot.list[selfId].score,0,715);
+}
+
+var render_CoolDownBar = function(){
     
-    var drawHealth = function(){
-        var hpWidth = 300* Player.list[selfId].hp / Player.list[selfId].hpMax;
-			ctx.fillStyle = 'red';
-            ctx.fillRect(360 - hpWidth/2,25,hpWidth,20);
-            ctx.font = '25px Arial';
-            ctx.fillStyle = 'white';
-		ctx.fillText("HEALTH ",310,64);
-    }
-
-	var drawUsername = function(){
-        ctx.font = '25px Arial';
-		ctx.fillStyle = 'white';
-		ctx.fillText( USERNAME,20,30);
-	}
-
-	var drawScore = function(){
-        ctx.font = '25px Arial';
-		ctx.fillStyle = 'white';
-		ctx.fillText("Score: "+Player.list[selfId].score,0,715);
-	}
-   
-    var drawCoolDown = function(){
+    var temp_cooldown =Robot.list[selfId].cooldown;
+        if ( temp_cooldown<50 ){
+            if (CHECKER<temp_cooldown){game_canvas.fillText("Heating up!!",360,700);}
+            if (CHECKER>temp_cooldown){
+                game_canvas.font = '20px Arial';
         
-        var temp_cooldown =Player.list[selfId].cooldown;
-
-
-
-         if ( temp_cooldown<50 ){
-             if (CHECKER<temp_cooldown){ctx.fillText("Heating up!!",360,700);}
-              if (CHECKER>temp_cooldown){
-                  ctx.font = '20px Arial';
-		 
-                  ctx.fillText("Cooling down (Hold attack)",290,410);
-                  ctx.fillText(Player.list[selfId].cooldown,310,750);}
-             
-              var hpWidth = 50* Player.list[selfId].cooldown / 20;
-		 	ctx.fillStyle = 'blue';
-            ctx.fillRect(360 - hpWidth/2,700,hpWidth,20);
-         }
-
-         if ( temp_cooldown>50  ){
-              if (CHECKER<temp_cooldown){ctx.fillText("Heating up",360,750);}
-               if (CHECKER>temp_cooldown){        
-                    ctx.font = '20px Arial';
-                  ctx.fillText("Cooling down (Hold attack)",290,410);
-                  ctx.fillText(Player.list[selfId].cooldown,310,700);}
-
-            ctx.fillText(Player.list[selfId].cooldown,310,700);
-           var hpWidth = 50* Player.list[selfId].cooldown / 20;
-		 	ctx.fillStyle = 'red';
-             ctx.fillRect(360 - hpWidth/2,700,hpWidth,20);
-         }
-
-
-
-
-        
-        CHECKER = temp_cooldown;
-        
-    }
+                game_canvas.fillText("Cooling down (Hold attack)",290,410);
+                game_canvas.fillText(Robot.list[selfId].cooldown,310,750);}
+            
+            var hpWidth = 50* Robot.list[selfId].cooldown / 20;
+        game_canvas.fillStyle = 'blue';
+        game_canvas.fillRect(360 - hpWidth/2,700,hpWidth,20);
+        }
+        if ( temp_cooldown>50  ){
+            if (CHECKER<temp_cooldown){game_canvas.fillText("Heating up",360,750);}
+            if (CHECKER>temp_cooldown){        
+                game_canvas.font = '20px Arial';
+                game_canvas.fillText("Cooling down (Hold attack)",290,410);
+                game_canvas.fillText(Robot.list[selfId].cooldown,310,700);}
+        game_canvas.fillText(Robot.list[selfId].cooldown,310,700);
+        var hpWidth = 50* Robot.list[selfId].cooldown / 20;
+        game_canvas.fillStyle = 'red';
+            game_canvas.fillRect(360 - hpWidth/2,700,hpWidth,20);
+        }
+    
+    CHECKER = temp_cooldown;
+    
+}
             
     
     
@@ -418,9 +370,9 @@ setTimeout(function() {
         socket.emit('keyPress',{inputId:'attack',state:false});
     }
     document.onmousemove = function(event){
-        var x = -740 + event.clientX - 8;
-        var y = -360 + event.clientY - 8;
-        var angle = Math.atan2(y,x) / Math.PI * 180;
+        var obj_x = -740 + event.clientX - 8;
+        var obj_y = -360 + event.clientY - 8;
+        var angle = Math.atan2(obj_y,obj_x) / Math.PI * 180;
         mouseAngle_player=angle;
         socket.emit('keyPress',{inputId:'mouseAngle',state:angle});
     }
