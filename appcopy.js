@@ -1,11 +1,13 @@
 
+//use the below code to run locally
+
+
 /*
-the cloud db connects but cannot write or read from it, so always returns true
+the local db works, please do change the name of this file to app.js and already exisitng app.js to appcopy.js
 
-the local db works and its code is on app.js
- to run this file please do please change the name  of this file to app.js and make app.js  into appcopy.js
-
+**databasse is called myGame with database called account, with username and password in table : account.**
 */
+<<<<<<< HEAD:appcopyy.js
 //note: it connects to DB but cannout read or write
 
 const MongoClient = require('mongodb').MongoClient;
@@ -15,6 +17,15 @@ var express = require('express');
 var app = express();
 var serv = require('http').Server(app);
 
+=======
+
+// 
+var mongojs = require("mongojs");
+var db = mongojs('localhost:27017/myGame', ['account']); //for local host 
+var express = require('express');
+var app = express();
+var serv = require('http').Server(app);
+>>>>>>> 9113ea451c78b67eed6726f1f3a64baeee1d46ad:appcopy.js
 
 //for getting the files
 app.get('/',function(req, res) {
@@ -284,41 +295,27 @@ Laser.OBJ_state = function(){
 }
 
 var check_password = function(data,cb){
-	//cb(true);
-	client.connect(err => {
-		const db = client.db("user-details").collection("account");
-		db.find({username:data.username,password:data.password},function(err,res){
-			if(res.length > 0)
-				cb(true);
-			else
-				cb(true);
-		});
-		
-	  });}
-
+	db.account.find({username:data.username,password:data.password},function(err,res){
+		if(res.length > 0)
+			cb(true);
+		else
+			cb(false);
+	});
+	
+}
 var check_username = function(data,cb){
 	//cb(true);
-	client.connect(err => {
-		const db = client.db("user-details").collection("account");
-		
-		db.find({username:data.username},function(data,res){
-	 	if(res.length > 0)
-			 cb(true);
-			 
-	 	else cb(true);
-	 });
-	  });   
+	db.account.find({username:data.username},function(data,res){
+		if(res.length > 0)
+			cb(true);
+		else
+			cb(false);
+	}); 
 }
 var insert = function(data,cb){
-
-	client.connect(err => {
-		
-		const db = client.db("user-details").collection("account");
-		// perform actions on the collection object
-		db.insert({username:data.username,password:data.password},function(err){ //adds user
-		cb();	});
-	});
-     }
+	db.account.insert({username:data.username,password:data.password},function(err){ //adds user
+		cb();
+     });}
 
 var playercounter=0; // global
 var io = require('socket.io')(serv,{});
